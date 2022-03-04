@@ -1,21 +1,88 @@
 package com.example.android.politicalpreparedness.election
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.android.politicalpreparedness.ResponseState
 import com.example.android.politicalpreparedness.database.ElectionDao
+import com.example.android.politicalpreparedness.network.models.AdministrationBody
+import com.example.android.politicalpreparedness.network.models.Division
+import com.example.android.politicalpreparedness.network.models.Election
+import kotlinx.coroutines.launch
+import repository.ElectionRepo
 
-class VoterInfoViewModel(private val dataSource: ElectionDao) : ViewModel() {
+class VoterInfoViewModel(private val repo: ElectionRepo) : ViewModel() {
 
-    //TODO: Add live data to hold voter info
+    val voterAdministrationBody = MutableLiveData<AdministrationBody>()
 
-    //TODO: Add var and methods to populate voter info
+    private val _electionUrl = MutableLiveData<String>()
+    val electionUrl: LiveData<String>
+        get() = _electionUrl
 
-    //TODO: Add var and methods to support loading URLs
+    private val _votingLocationUrl = MutableLiveData<String>()
+    val votingLocationUrl: LiveData<String>
+        get() = _votingLocationUrl
 
-    //TODO: Add var and methods to save and remove elections to local database
-    //TODO: cont'd -- Populate initial state of save button to reflect proper action based on election saved status
+    private val _ballotoUrl = MutableLiveData<String>()
+    val ballotoUrl: LiveData<String>
+        get() = _ballotoUrl
 
-    /**
-     * Hint: The saved state can be accomplished in multiple ways. It is directly related to how elections are saved/removed from the database.
-     */
+    val election = MutableLiveData<Election>()
+    val savedElection = MutableLiveData<Election>()
 
+    private val _errorMessage = MutableLiveData<String?>()
+    val errorMessage: LiveData<String?>
+        get() = _errorMessage
+
+
+    fun getVoterInfo(division: Division, electionId: Int) {
+        val address = "${division.state} ${division.country}"
+        viewModelScope.launch {
+            val voterResponse = repo.getVoterInfo(address, electionId)
+            when (voterResponse) {
+                is ResponseState.Success -> {
+                    election.value = voterResponse.data.election
+                    voterAdministrationBody.value = voterResponse.data.state?.get(0)?.electionAdministrationBody
+                }
+                is ResponseState.Error -> {
+                    _errorMessage.value = voterResponse.message
+                }
+            }
+        }
+    }
+
+    fun setBallotUrl() {
+        _ballotoUrl.value = voterAdministrationBody.value?.ballotInfoUrl
+    }
+
+    fun getElectionRepo(electionId: Int) {
+        viewModelScope.launch {
+            savedElection.value = repo.getElectionById(electionId)
+        }
+    }
+
+    fun setVotingLocationUrl() {
+        _votingLocationUrl.value = voterAdministrationBody.value?.votingLocationFinderUrl
+    }
+
+    fun setElectionUrl() {
+        _electionUrl.value = voterAdministrationBody.value?.electionInfoUrl
+    }
+
+    fun followElectionButton() {
+        viewModelScope.launch {
+            if (savedElection.value == null) {
+                election.value?.let { electionValue ->
+                    repo.saveElection(electionValue)
+                    savedElection.value = electionValue
+                }
+            } else {
+                election.value?.let { electionValue ->
+                    savedElection.value = null
+                    repo.deleteElection(electionValue)
+                }
+            }
+        }
+    }
 }
