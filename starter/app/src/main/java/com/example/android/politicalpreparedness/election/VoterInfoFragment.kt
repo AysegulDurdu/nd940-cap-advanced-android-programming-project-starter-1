@@ -28,21 +28,47 @@ class VoterInfoFragment : Fragment() {
     ): View? {
 
 
+/*
         val args: VoterInfoFragmentArgs by navArgs()
         val electionId = args.argElectionId
         val division = args.argDivision
 
-
+ */
         val binding =
             DataBindingUtil.inflate<FragmentVoterInfoBinding>(inflater, R.layout.fragment_voter_info, container, false)
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
-        observe()
+        arguments?.let {
+            val division = VoterInfoFragmentArgs.fromBundle(it).argDivision
+            //val electionId = VoterInfoFragmentArgs.fromBundle(it).argElectionId
 
-        viewModel.getVoterInfo(division, electionId)
-        viewModel.getElectionRepo(electionId)
+
+            // observe()
+
+            viewModel.getVoterInfo(division, 1)
+            //viewModel.getElectionRepo(electionId)
+
+            viewModel.votingLocationUrl.observe(viewLifecycleOwner, Observer { url ->
+                url?.let {
+                    loadUrlIntent(it)
+                }
+            })
+            viewModel.electionUrl.observe(viewLifecycleOwner, Observer { url ->
+                url?.let {
+                    loadUrlIntent(it)
+                }
+            })
+            viewModel.ballotoUrl.observe(viewLifecycleOwner, Observer { url ->
+                url?.let {
+                    loadUrlIntent(it)
+                }
+            })
+        }
+        viewModel.errorMessage.observe(viewLifecycleOwner, Observer { message ->
+            Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+        })
 
 
         viewModel.savedElection.observe(viewLifecycleOwner, Observer { election ->
@@ -56,28 +82,6 @@ class VoterInfoFragment : Fragment() {
         return binding.root
     }
 
-    fun observe() {
-        viewModel.votingLocationUrl.observe(viewLifecycleOwner, Observer { url ->
-            url?.let {
-                loadUrlIntent(it)
-            }
-        })
-        viewModel.electionUrl.observe(viewLifecycleOwner, Observer { url ->
-            url?.let {
-                loadUrlIntent(it)
-            }
-        })
-        viewModel.ballotoUrl.observe(viewLifecycleOwner, Observer { url ->
-            url?.let {
-                loadUrlIntent(it)
-            }
-        })
-
-        viewModel.errorMessage.observe(viewLifecycleOwner, Observer { message ->
-            Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
-        })
-
-    }
 
     fun loadUrlIntent(urlString: String) {
         val uri = Uri.parse(urlString)

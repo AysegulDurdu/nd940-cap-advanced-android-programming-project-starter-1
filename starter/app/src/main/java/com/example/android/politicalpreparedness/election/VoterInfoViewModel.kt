@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android.politicalpreparedness.ResponseState
-import com.example.android.politicalpreparedness.database.ElectionDao
 import com.example.android.politicalpreparedness.network.models.AdministrationBody
 import com.example.android.politicalpreparedness.network.models.Division
 import com.example.android.politicalpreparedness.network.models.Election
