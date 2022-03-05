@@ -15,7 +15,6 @@ class ElectionsViewModel(private val repo: ElectionRepo): ViewModel() {
     val upcomingElection: LiveData<List<Election>>
         get() = _upcomingElection
 
-    val showLoading = MutableLiveData<Boolean>()
 
     val savedElections = repo.savedElections
 
@@ -32,17 +31,14 @@ class ElectionsViewModel(private val repo: ElectionRepo): ViewModel() {
     }
 
     private fun getElections() {
-        //showLoading.value = true
         viewModelScope.launch {
             val electionState = repo.getElections()
             when(electionState) {
                 is ResponseState.Success -> {
-                    //showLoading.value = false
                     _upcomingElection.value = electionState.data
                 }
 
                 is ResponseState.Error -> {
-                    //showLoading.value = false
                     _showMessage.value = electionState.message
                 }
             }
