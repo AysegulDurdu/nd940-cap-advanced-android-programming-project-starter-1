@@ -19,11 +19,11 @@ import repository.ElectionRepo
 
 class ElectionsFragment: Fragment() {
 
+    //TODO: Declare ViewModel
 
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-
         val db = ElectionDatabase.getInstance(requireContext())
         val repo = ElectionRepo(db)
         val viewModel by viewModels<ElectionsViewModel>(factoryProducer = { ElectionsViewModelFactory(repo) })
@@ -69,7 +69,8 @@ class ElectionsFragment: Fragment() {
         })
 
         return binding.root
-
     }
+
+    //TODO: Refresh adapters when fragment loads
 
 }

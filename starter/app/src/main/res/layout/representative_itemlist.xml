@@ -23,6 +23,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_profile"
+            android:contentDescription="@string/profile_photo"
             app:profileImage="@{representative.official.photoUrl}"/>
 
         <ImageView
@@ -33,6 +34,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/facebookIcon"
             app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/wwwIcon"
             app:srcCompat="@drawable/ic_www" />
 
         <ImageView
@@ -43,6 +45,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/twitterIcon"
             app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/facebookIcon"
             app:srcCompat="@drawable/ic_facebook" />
 
         <ImageView
@@ -53,6 +56,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/twwitterIcon"
             app:srcCompat="@drawable/ic_twitter" />
 
         <TextView

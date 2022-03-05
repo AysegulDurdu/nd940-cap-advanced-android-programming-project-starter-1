@@ -19,6 +19,10 @@
     <string name="use_my_location">USE MY LOCATION</string>
     <string name="my_representatives">My Representatives</string>
     <string name="president">President</string>
+    <string name="profile_photo">profile_photo</string>
+    <string name="wwwIcon">wwwIcon</string>
+    <string name="facebookIcon">facebookIcon</string>
+    <string name="twwitterIcon">twitterIcon</string>
 
     <!-- TODO: Add necessary string values -->
 

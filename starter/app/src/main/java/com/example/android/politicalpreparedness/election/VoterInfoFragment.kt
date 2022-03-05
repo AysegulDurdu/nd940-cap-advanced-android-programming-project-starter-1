@@ -17,8 +17,8 @@ import repository.ElectionRepo
 
 class VoterInfoFragment : Fragment() {
 
-    val db = ElectionDatabase.getInstance(requireContext())
-    val repo = ElectionRepo(db)
+    val db: ElectionDatabase by lazy { ElectionDatabase.getInstance(requireContext()) }
+    val repo: ElectionRepo by lazy { ElectionRepo(db) }
 
     val viewModel: VoterInfoViewModel by viewModels(factoryProducer = { VoterInfoViewModelFactory(repo) })
     override fun onCreateView(
