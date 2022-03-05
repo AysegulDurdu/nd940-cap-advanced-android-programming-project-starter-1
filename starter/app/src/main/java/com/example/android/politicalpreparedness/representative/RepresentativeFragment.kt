@@ -1,6 +1,7 @@
 package com.example.android.politicalpreparedness.representative
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Geocoder
@@ -112,18 +113,15 @@ class DetailFragment : Fragment() {
         return ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun getLocation() {
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            fusedLocationPorviderClient.lastLocation.addOnSuccessListener {
-                it.let {
-                    val address = geoCodeLocation(it)
-                    viewModel.useLocation(address)
-                }
-            }
-            return
-        }
 
+    @SuppressLint("MissingPermission")
+    private fun getLocation() {
+        fusedLocationPorviderClient.lastLocation.addOnSuccessListener { location: Location? ->
+            location?.let {
+                val address = geoCodeLocation(it)
+                viewModel.useLocation(address)
+            }
+        }
     }
 
     private fun geoCodeLocation(location: Location): Address {
